@@ -44,7 +44,7 @@ async function reservar(datos){
       inicio: aFechaHora(datos.fecha, datos.horaInicio),
       fin: aFechaHora(datos.fecha, datos.horaFin),
     })
-    exito.value = 'Reserva creada'
+    exito.value = 'Reserva creada correctamente.'
     fecha.value = datos.fecha
     reservasCreadas.value++
     await cargarOcupacion()
@@ -59,14 +59,17 @@ onMounted(cargarEspacio)
 
 <template>
   <div class="vista">
-    <RouterLink to="/espacios">← Volver</RouterLink>
+    <RouterLink to="/espacios" class="volver">← Espacios</RouterLink>
 
-    <p v-if="!espacio && !error">Cargando espacio...</p>
+    <p v-if="!espacio && !error" class="vacio">Cargando espacio...</p>
 
-    <template v-if="espacio">
+    <div v-if="espacio" class="vista-titulo">
       <h1>{{ espacio.nombre }}</h1>
-      <p class="detalle">Capacidad: {{ espacio.capacidad }} personas · {{ espacio.ubicacion }}</p>
-    </template>
+      <div class="datos">
+        <span class="etiqueta">{{ espacio.capacidad }} personas</span>
+        <span class="etiqueta">{{ espacio.ubicacion }}</span>
+      </div>
+    </div>
 
     <p v-if="error" class="mensaje error">{{ error }}</p>
     <p v-if="exito" class="mensaje exito">{{ exito }}</p>
@@ -74,14 +77,17 @@ onMounted(cargarEspacio)
     <div v-if="espacio" class="columnas">
       <!-- horarios ocupados del dia elegido -->
       <section class="tarjeta">
-        <h2>Horarios ocupados</h2>
-        <input v-model="fecha" type="date" @change="cargarOcupacion">
+        <div class="cabecera">
+          <h2>Disponibilidad</h2>
+          <input v-model="fecha" type="date" @change="cargarOcupacion">
+        </div>
 
-        <p v-if="ocupadas.length === 0" class="vacio">No hay reservas este día.</p>
-        <ul v-else>
+        <p v-if="ocupadas.length === 0" class="vacio">Libre todo el día.</p>
+
+        <ul v-else class="horarios">
           <li v-for="reserva in ocupadas" :key="reserva.id">
-            <strong>{{ soloHora(reserva.inicio) }} – {{ soloHora(reserva.fin) }}</strong>
-            {{ reserva.responsable }}
+            <span class="etiqueta azul">{{ soloHora(reserva.inicio) }} – {{ soloHora(reserva.fin) }}</span>
+            <span>{{ reserva.responsable }}</span>
           </li>
         </ul>
       </section>
@@ -100,37 +106,60 @@ onMounted(cargarEspacio)
 </template>
 
 <style scoped>
-.detalle{
-  color: #555555;
-  margin-top: -8px;
+.volver{
+  display: inline-block;
+  margin-bottom: 16px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.datos{
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .columnas{
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  align-items: start;
 }
 
-h2{
-  margin-top: 0;
-  font-size: 18px;
+/* titulo de la tarjeta a la izquierda y fecha a la derecha */
+.cabecera{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
-input[type="date"]{
-  padding: 8px;
-  border: 1px solid #cccccc;
-  border-radius: 6px;
+.cabecera h2{
+  margin-bottom: 0;
 }
 
-ul{
-  padding-left: 18px;
+.horarios{
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-li{
-  margin: 6px 0;
+/* cada horario ocupado es una fila separada por una linea */
+.horarios li{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-borde);
 }
 
-@media (max-width: 600px){
+.horarios li:last-child{
+  border-bottom: none;
+}
+
+/* en pantallas pequenas las tarjetas van una debajo de la otra */
+@media (max-width: 700px){
   .columnas{
     grid-template-columns: 1fr;
   }

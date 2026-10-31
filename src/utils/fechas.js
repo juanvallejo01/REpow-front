@@ -25,3 +25,13 @@ export function soloHora(iso){
 export function textoFecha(iso){
   return new Date(iso).toLocaleDateString('es-CO', { timeZone: ZONA, weekday: 'long', day: 'numeric', month: 'long' })
 }
+
+// fecha que manda el back -> '20'
+export function numeroDia(iso){
+  return new Date(iso).toLocaleDateString('es-CO', { timeZone: ZONA, day: 'numeric' })
+}
+
+// fecha que manda el back -> 'oct'
+export function mesCorto(iso){
+  return new Date(iso).toLocaleDateString('es-CO', { timeZone: ZONA, month: 'short' }).replace('.', '')
+}

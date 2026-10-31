@@ -55,35 +55,23 @@ const form = reactive({ ...props.inicial })
 .formulario{
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-label{
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 14px;
-  color: #555555;
-}
-
-input{
-  padding: 8px;
-  border: 1px solid #cccccc;
-  border-radius: 6px;
-  font-size: 14px;
+  gap: 14px;
 }
 
 .horas{
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
-}
-
-.horas label{
-  flex: 1;
 }
 
 .acciones{
   display: flex;
   gap: 8px;
+  margin-top: 4px;
+}
+
+/* el boton principal ocupa todo el ancho que sobra */
+.acciones button[type="submit"]{
+  flex: 1;
 }
 </style>

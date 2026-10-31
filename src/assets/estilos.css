@@ -1,0 +1,217 @@
+/* =============================================================
+   ESTILOS GENERALES DE REpow
+   Para cambiar colores, bordes o sombras de TODA la app
+   basta con cambiar las variables de :root
+   ============================================================= */
+
+:root{
+  /* --- colores --- */
+  --color-principal: #2563eb;          /* botones, enlaces y detalles */
+  --color-principal-hover: #1d4ed8;    /* boton al pasar el mouse */
+  --color-principal-suave: #eff6ff;    /* fondos claros de etiquetas */
+
+  --color-fondo: #f5f6f8;              /* fondo de la pagina */
+  --color-tarjeta: #ffffff;            /* fondo de tarjetas y encabezado */
+  --color-borde: #e5e7eb;              /* lineas y bordes */
+
+  --color-texto: #111827;              /* texto principal */
+  --color-texto-suave: #6b7280;        /* textos secundarios */
+
+  --color-exito: #15803d;
+  --color-exito-suave: #dcfce7;
+  --color-error: #b91c1c;
+  --color-error-suave: #fee2e2;
+  --color-peligro: #dc2626;            /* boton "Cancelar reserva" */
+
+  /* --- forma --- */
+  --radio: 12px;                       /* esquinas redondeadas */
+  --sombra: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.06);
+  --fuente: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* ---------- base ---------- */
+
+*{
+  box-sizing: border-box;
+}
+
+body{
+  margin: 0;
+  font-family: var(--fuente);
+  font-size: 15px;
+  line-height: 1.5;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+}
+
+h1, h2, h3{
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+a{
+  color: var(--color-principal);
+  text-decoration: none;
+}
+
+/* ---------- pagina ---------- */
+
+/* contenedor de cada vista: centrado y con ancho maximo */
+.vista{
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+/* titulo y descripcion de cada vista */
+.vista-titulo{
+  margin-bottom: 24px;
+}
+
+.vista-titulo h1{
+  font-size: 28px;
+}
+
+.vista-titulo p{
+  margin: 4px 0 0 0;
+  color: var(--color-texto-suave);
+}
+
+/* caja blanca para tarjetas y formularios */
+.tarjeta{
+  background-color: var(--color-tarjeta);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  padding: 20px;
+  box-shadow: var(--sombra);
+}
+
+.tarjeta h2{
+  font-size: 17px;
+  margin-bottom: 16px;
+}
+
+/* ---------- botones ---------- */
+
+button{
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background-color: var(--color-principal);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover{
+  background-color: var(--color-principal-hover);
+}
+
+button.secundario{
+  background-color: var(--color-tarjeta);
+  border-color: var(--color-borde);
+  color: var(--color-texto);
+}
+
+button.secundario:hover{
+  background-color: var(--color-fondo);
+}
+
+button.peligro{
+  background-color: var(--color-tarjeta);
+  border-color: var(--color-error-suave);
+  color: var(--color-peligro);
+}
+
+button.peligro:hover{
+  background-color: var(--color-error-suave);
+}
+
+/* ---------- formularios ---------- */
+
+label{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-texto-suave);
+}
+
+input{
+  padding: 10px 12px;
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--color-texto);
+  background-color: var(--color-tarjeta);
+}
+
+/* borde de color en el campo que se esta escribiendo */
+input:focus{
+  outline: none;
+  border-color: var(--color-principal);
+  box-shadow: 0 0 0 3px var(--color-principal-suave);
+}
+
+/* contorno visible al navegar con teclado (Tab) */
+button:focus-visible,
+a:focus-visible{
+  outline: 3px solid var(--color-principal-suave);
+  outline-offset: 2px;
+}
+
+/* ---------- etiquetas pequenas (estado, capacidad, version) ---------- */
+
+.etiqueta{
+  display: inline-block;
+  padding: 2px 10px;
+  border: 1px solid var(--color-borde);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: var(--color-tarjeta);
+  color: var(--color-texto-suave);
+}
+
+.etiqueta.azul{
+  border-color: transparent;
+  background-color: var(--color-principal-suave);
+  color: var(--color-principal);
+}
+
+.etiqueta.verde{
+  border-color: transparent;
+  background-color: var(--color-exito-suave);
+  color: var(--color-exito);
+}
+
+/* ---------- mensajes para el usuario ---------- */
+
+.mensaje{
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.mensaje.error{
+  background-color: var(--color-error-suave);
+  color: var(--color-error);
+}
+
+.mensaje.exito{
+  background-color: var(--color-exito-suave);
+  color: var(--color-exito);
+}
+
+/* texto cuando no hay datos o esta cargando */
+.vacio{
+  color: var(--color-texto-suave);
+  text-align: center;
+  padding: 24px 0;
+}

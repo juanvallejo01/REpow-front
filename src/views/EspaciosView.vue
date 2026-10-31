@@ -21,9 +21,12 @@ onMounted(cargarEspacios)
 
 <template>
   <div class="vista">
-    <h1>Espacios</h1>
+    <div class="vista-titulo">
+      <h1>Espacios</h1>
+      <p>Elige un espacio para ver su disponibilidad y reservar.</p>
+    </div>
 
-    <p v-if="cargando">Cargando espacios...</p>
+    <p v-if="cargando" class="vacio">Cargando espacios...</p>
     <p v-else-if="error" class="mensaje error">{{ error }}</p>
 
     <!-- cada espacio es un enlace a su pagina de detalle -->
@@ -34,51 +37,75 @@ onMounted(cargarEspacios)
         :to="`/espacios/${espacio.id}`"
         class="tarjeta espacio"
       >
+        <!-- primera letra del nombre como "icono" -->
+        <span class="inicial">{{ espacio.nombre[0] }}</span>
+
         <h2>{{ espacio.nombre }}</h2>
-        <p>Capacidad: {{ espacio.capacidad }} personas</p>
-        <p>{{ espacio.ubicacion }}</p>
-        <span class="ver">Ver horarios →</span>
+        <p class="ubicacion">{{ espacio.ubicacion }}</p>
+
+        <div class="pie">
+          <span class="etiqueta">{{ espacio.capacidad }} personas</span>
+          <span class="ver">Ver disponibilidad →</span>
+        </div>
       </RouterLink>
     </div>
   </div>
 </template>
 
 <style scoped>
+/* las tarjetas se acomodan solas: 2 por fila en computador y 1 en celular */
 .grid{
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
 }
 
 .espacio{
+  display: flex;
+  flex-direction: column;
   color: inherit;
-  text-decoration: none;
-  transition: transform 0.2s;
+  transition: border-color 0.2s, transform 0.2s;
 }
 
 .espacio:hover{
-  transform: scale(1.02);
+  border-color: var(--color-principal);
+  transform: translateY(-2px);
 }
 
-.espacio h2{
-  margin: 0 0 8px 0;
+.inicial{
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  background-color: var(--color-principal-suave);
+  color: var(--color-principal);
+  font-weight: 700;
   font-size: 18px;
 }
 
-.espacio p{
-  margin: 4px 0;
-  color: #555555;
+.espacio h2{
+  margin-bottom: 4px;
+}
+
+.ubicacion{
+  margin: 0 0 16px 0;
+  color: var(--color-texto-suave);
+  font-size: 14px;
+}
+
+/* capacidad a la izquierda y enlace a la derecha, siempre al fondo de la tarjeta */
+.pie{
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .ver{
-  display: inline-block;
-  margin-top: 8px;
-  color: #2563eb;
-}
-
-@media (max-width: 600px){
-  .grid{
-    grid-template-columns: 1fr;
-  }
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-principal);
 }
 </style>

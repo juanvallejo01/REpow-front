@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import ReservaForm from '../components/ReservaForm.vue'
 import { getReservas, getEspacios, editarReserva, cancelarReserva, mensajeDeError } from '../services/api.js'
-import { aFechaHora, soloFecha, soloHora, textoFecha } from '../utils/fechas.js'
+import { aFechaHora, soloFecha, soloHora, numeroDia, mesCorto } from '../utils/fechas.js'
 
 const reservas = ref([])
 // { 1: 'Sala de reuniones A', 2: 'Auditorio', ... } para mostrar el nombre del espacio
@@ -44,7 +44,7 @@ async function guardar(reserva, datos){
       inicio: aFechaHora(datos.fecha, datos.horaInicio),
       fin: aFechaHora(datos.fecha, datos.horaFin),
     })
-    exito.value = 'Reserva actualizada'
+    exito.value = 'Reserva actualizada correctamente.'
     editando.value = null
   }catch(e){
     // 412: otra persona la cambio antes (la ventana para resolverlo va despues)
@@ -61,7 +61,7 @@ async function cancelar(reserva){
   exito.value = ''
   try{
     await cancelarReserva(reserva)
-    exito.value = 'Reserva cancelada'
+    exito.value = 'Reserva cancelada.'
   }catch(e){
     error.value = mensajeDeError(e)
   }
@@ -73,12 +73,15 @@ onMounted(cargarReservas)
 
 <template>
   <div class="vista">
-    <h1>Reservas</h1>
+    <div class="vista-titulo">
+      <h1>Reservas</h1>
+      <p>Cada vez que una reserva cambia, su versión sube en 1.</p>
+    </div>
 
     <p v-if="error" class="mensaje error">{{ error }}</p>
     <p v-if="exito" class="mensaje exito">{{ exito }}</p>
 
-    <p v-if="cargando">Cargando reservas...</p>
+    <p v-if="cargando" class="vacio">Cargando reservas...</p>
     <p v-else-if="reservas.length === 0" class="vacio">Todavía no hay reservas.</p>
 
     <div v-else class="lista">
@@ -88,18 +91,28 @@ onMounted(cargarReservas)
         class="tarjeta reserva"
         :class="{ cancelada: reserva.estado === 'cancelada' }"
       >
-        <div class="cabecera">
-          <h2>{{ nombresEspacios[reserva.espacio_id] }}</h2>
-          <span class="estado">{{ reserva.estado }}</span>
-        </div>
+        <div class="fila">
+          <!-- cuadro con el dia y el mes -->
+          <div class="fecha">
+            <span class="dia">{{ numeroDia(reserva.inicio) }}</span>
+            <span class="mes">{{ mesCorto(reserva.inicio) }}</span>
+          </div>
 
-        <p>{{ textoFecha(reserva.inicio) }} · {{ soloHora(reserva.inicio) }} – {{ soloHora(reserva.fin) }}</p>
-        <p>Responsable: {{ reserva.responsable }}</p>
-        <!-- la version se muestra para ver como sube con cada cambio -->
-        <p class="version">Versión {{ reserva.version }}</p>
+          <div class="info">
+            <h2>{{ nombresEspacios[reserva.espacio_id] }}</h2>
+            <p>{{ soloHora(reserva.inicio) }} – {{ soloHora(reserva.fin) }} · {{ reserva.responsable }}</p>
+          </div>
+
+          <div class="estado">
+            <span class="etiqueta" :class="{ verde: reserva.estado === 'activa' }">{{ reserva.estado }}</span>
+            <!-- la version se muestra para ver como sube con cada cambio -->
+            <span class="etiqueta">v{{ reserva.version }}</span>
+          </div>
+        </div>
 
         <ReservaForm
           v-if="editando === reserva.id"
+          class="editar"
           :inicial="datosDelFormulario(reserva)"
           texto-boton="Guardar cambios"
           con-cancelar
@@ -109,7 +122,7 @@ onMounted(cargarReservas)
 
         <div v-else-if="reserva.estado === 'activa'" class="acciones">
           <button class="secundario" @click="editando = reserva.id">Editar</button>
-          <button class="peligro" @click="cancelar(reserva)">Cancelar</button>
+          <button class="peligro" @click="cancelar(reserva)">Cancelar reserva</button>
         </div>
       </div>
     </div>
@@ -123,46 +136,84 @@ onMounted(cargarReservas)
   gap: 12px;
 }
 
-.cabecera{
+/* fecha | informacion | estado, en una sola fila */
+.fila{
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 16px;
 }
 
-.reserva h2{
+.fecha{
+  width: 56px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 0;
+  border-radius: 10px;
+  background-color: var(--color-principal-suave);
+  color: var(--color-principal);
+}
+
+.dia{
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.mes{
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* la informacion ocupa todo el espacio del medio */
+.info{
+  flex: 1;
+}
+
+.info h2{
+  margin-bottom: 2px;
+}
+
+.info p{
   margin: 0;
-  font-size: 18px;
-}
-
-.reserva p{
-  margin: 6px 0;
-  color: #555555;
+  color: var(--color-texto-suave);
+  font-size: 14px;
 }
 
 .estado{
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  background-color: #dcfce7;
-  color: #166534;
+  display: flex;
+  gap: 6px;
+}
+
+.acciones{
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-borde);
+}
+
+.editar{
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-borde);
 }
 
 .cancelada{
   opacity: 0.6;
 }
 
-.cancelada .estado{
-  background-color: #e5e7eb;
-  color: #555555;
-}
+/* en pantallas pequenas el estado baja debajo de la informacion */
+@media (max-width: 600px){
+  .fila{
+    flex-wrap: wrap;
+  }
 
-.version{
-  font-size: 12px;
-}
-
-.acciones{
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
+  .estado{
+    width: 100%;
+  }
 }
 </style>
