@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import ReservaForm from '../components/ReservaForm.vue'
+import ConflictoModal from '../components/ConflictoModal.vue'
 import { getReservas, getEspacios, editarReserva, cancelarReserva, mensajeDeError } from '../services/api.js'
 import { aFechaHora, soloFecha, soloHora, numeroDia, mesCorto } from '../utils/fechas.js'
 
@@ -12,6 +13,8 @@ const error = ref('')
 const exito = ref('')
 // id de la reserva que se esta editando (null = ninguna)
 const editando = ref(null)
+// choque abierto en la ventana: { mio, actual } (null = no hay ventana)
+const conflicto = ref(null)
 
 async function cargarReservas(){
   try{
@@ -47,11 +50,32 @@ async function guardar(reserva, datos){
     exito.value = 'Reserva actualizada correctamente.'
     editando.value = null
   }catch(e){
-    // 412: otra persona la cambio antes (la ventana para resolverlo va despues)
+    // 412: otra persona guardo primero -> se abre la ventana para que el usuario decida
+    // el back manda en "data" la reserva como esta ahora (con su version nueva)
+    if (e.response?.status === 412) {
+      conflicto.value = { mio: datos, actual: e.response.data.data }
+      return
+    }
     error.value = mensajeDeError(e)
   }
   // se recarga para tener la version nueva de cada reserva
   await cargarReservas()
+}
+
+// opcion 1 de la ventana: descartar mis cambios
+async function usarActual(){
+  conflicto.value = null
+  editando.value = null
+  exito.value = 'Te quedaste con la versión actual de la reserva.'
+  await cargarReservas()
+}
+
+// opcion 2 de la ventana: guardar mis cambios encima de la version nueva
+// se usa la reserva "actual" porque trae la version correcta para el If-Match
+async function guardarMio(){
+  const { mio, actual } = conflicto.value
+  conflicto.value = null
+  await guardar(actual, mio)
 }
 
 async function cancelar(reserva){
@@ -126,6 +150,15 @@ onMounted(cargarReservas)
         </div>
       </div>
     </div>
+
+    <!-- ventana de choque: solo aparece cuando el back respondio 412 -->
+    <ConflictoModal
+      v-if="conflicto"
+      :mio="conflicto.mio"
+      :actual="conflicto.actual"
+      @usar-actual="usarActual"
+      @guardar-mio="guardarMio"
+    />
   </div>
 </template>
 
