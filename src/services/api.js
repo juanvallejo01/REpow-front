@@ -1,3 +1,4 @@
+// CONEXION CON EL BACK: todas las llamadas a la API estan en este archivo
 import axios from 'axios'
 
 // instancia de axios con la url base de nuestro back (Express + PostgreSQL)

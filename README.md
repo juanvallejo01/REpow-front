@@ -57,6 +57,18 @@ src/
 Para cambiar colores, bordes o sombras de toda la app, basta con cambiar las variables de
 `:root` al inicio de `src/assets/estilos.css`.
 
+## Dónde cambiar cada cosa
+
+| Quiero cambiar... | Archivo |
+|-------------------|---------|
+| Colores, bordes o sombras de toda la app | `src/assets/estilos.css` |
+| El menú | `src/layouts/MainLayout.vue` |
+| Las URLs o agregar una pantalla | `src/router/index.js` y `src/views/` |
+| Lo que se ve en una pantalla | La vista correspondiente en `src/views/` |
+| El formulario de reserva | `src/components/ReservaForm.vue` |
+| La ventana de choque | `src/components/ConflictoModal.vue` |
+| Una llamada al back | `src/services/api.js` |
+
 ## Cómo se resuelve un choque
 
 1. Cada reserva llega del back con su **versión** (se ve como `v1`, `v2`... en la pantalla de Reservas).

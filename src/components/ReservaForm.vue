@@ -1,4 +1,5 @@
 <script setup>
+// COMPONENTE: formulario de reserva (lo usan EspacioView y ReservasView)
 import { reactive } from 'vue'
 
 // formulario para crear o editar una reserva

@@ -1,4 +1,5 @@
 <script setup>
+// COMPONENTE: ventana que compara mis cambios con la version actual
 import { aFechaHora, soloFecha, soloHora, textoFecha } from '../utils/fechas.js'
 
 // ventana que aparece cuando el back responde 412:

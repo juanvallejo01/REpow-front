@@ -1,3 +1,4 @@
+// RUTAS DEL FRONT: que pantalla se muestra en cada URL
 import { createRouter, createWebHistory } from 'vue-router'
 import EspaciosView from '../views/EspaciosView.vue'
 import EspacioView from '../views/EspacioView.vue'

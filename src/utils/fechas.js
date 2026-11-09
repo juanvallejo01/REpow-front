@@ -1,3 +1,4 @@
+// FECHAS: convierte fechas entre el formato del back y el de las pantallas
 // el proyecto trabaja en hora de Colombia (UTC-5)
 const ZONA = 'America/Bogota'
 

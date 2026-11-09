@@ -1,13 +1,13 @@
 <script setup>
+// PANTALLA /reservas: lista las reservas y permite editarlas o cancelarlas
+// si el back responde 412 abre ConflictoModal para resolver el choque
 import { ref, onMounted } from 'vue'
 import ReservaForm from '../components/ReservaForm.vue'
 import ConflictoModal from '../components/ConflictoModal.vue'
-import { getReservas, getEspacios, editarReserva, cancelarReserva, mensajeDeError } from '../services/api.js'
+import { getReservas, editarReserva, cancelarReserva, mensajeDeError } from '../services/api.js'
 import { aFechaHora, soloFecha, soloHora, numeroDia, mesCorto } from '../utils/fechas.js'
 
 const reservas = ref([])
-// { 1: 'Sala de reuniones A', 2: 'Auditorio', ... } para mostrar el nombre del espacio
-const nombresEspacios = ref({})
 const cargando = ref(true)
 const error = ref('')
 const exito = ref('')
@@ -18,9 +18,7 @@ const conflicto = ref(null)
 
 async function cargarReservas(){
   try{
-    const [lista, espacios] = await Promise.all([getReservas(), getEspacios()])
-    reservas.value = lista
-    nombresEspacios.value = Object.fromEntries(espacios.map((e) => [e.id, e.nombre]))
+    reservas.value = await getReservas()
   }catch(e){
     error.value = mensajeDeError(e)
   }finally{
@@ -123,7 +121,7 @@ onMounted(cargarReservas)
           </div>
 
           <div class="info">
-            <h2>{{ nombresEspacios[reserva.espacio_id] }}</h2>
+            <h2>{{ reserva.espacio_nombre }}</h2>
             <p>{{ soloHora(reserva.inicio) }} – {{ soloHora(reserva.fin) }} · {{ reserva.responsable }}</p>
           </div>
 

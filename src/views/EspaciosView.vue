@@ -1,4 +1,5 @@
 <script setup>
+// PANTALLA /espacios: lista las salas; cada tarjeta lleva a su detalle
 import { ref, onMounted } from 'vue'
 import { getEspacios, mensajeDeError } from '../services/api.js'
 

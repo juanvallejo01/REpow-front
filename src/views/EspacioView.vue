@@ -1,4 +1,5 @@
 <script setup>
+// PANTALLA /espacios/:id: horarios ocupados del dia y formulario para reservar
 import { ref, onMounted } from 'vue'
 import ReservaForm from '../components/ReservaForm.vue'
 import { getEspacio, getOcupacion, crearReserva, mensajeDeError } from '../services/api.js'

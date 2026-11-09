@@ -1,4 +1,5 @@
 <script setup>
+// LAYOUT: encabezado con el menu; la pantalla activa se dibuja en el <slot />
 // enlaces del encabezado: cada uno lleva a una vista
 const enlaces = [
   { nombre: 'Espacios', ruta: '/espacios' },
